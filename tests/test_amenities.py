@@ -1,19 +1,21 @@
 import unittest
-from model.amenity import Amenity
+from model.amenities import Amenities
+import uuid
 
 
-class TestAmenity(unittest.TestCase):
+class TestAmenities(unittest.TestCase):
 
     def setUp(self):
-        Amenity.amenity_count = 0
+        Amenities.amenities_count = 0
 
-    def test_amenity_creation(self):
-        amenity = Amenity("Free WiFi", "High-speed internet access")
-        self.assertEqual(amenity.amenity_id, 1)
-        self.assertEqual(amenity.name, "Free WiFi")
-        self.assertEqual(amenity.description, "High-speed internet access")
-        self.assertIsNotNone(amenity.created_at)
-        self.assertIsNotNone(amenity.updated_at)
+    def test_amenities_creation(self):
+        amenities = Amenities("Free WiFi", "High-speed internet access")
+        self.assertIsInstance(amenities.amenities_id, uuid.UUID)
+        self.assertEqual(amenities.name, "Free WiFi")
+        self.assertEqual(amenities.description, "High-speed internet access")
+        self.assertIsNotNone(amenities.created_at)
+        self.assertIsNotNone(amenities.updated_at)
+        self.assertEqual(amenities.created_at, amenities.updated_at)
 
 
 if __name__ == '__main__':
