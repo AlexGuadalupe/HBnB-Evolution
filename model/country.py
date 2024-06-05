@@ -9,5 +9,6 @@ class Country:
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
         Country.country_count += 1
+
     def __repr__(self):
         return f"Country({self.name}, {self.country_id})"
