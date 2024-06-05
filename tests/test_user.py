@@ -1,5 +1,7 @@
 import unittest
 from model.user import User
+from datetime import datetime
+import uuid
 
 
 class TestUser(unittest.TestCase):
@@ -10,10 +12,11 @@ class TestUser(unittest.TestCase):
 
     def test_user_creation(self):
         user = User("test@example.com", "John", "Doe")
-        self.assertEqual(user.user_id, 1)
+        self.assertIsInstance(user.user_id, uuid.UUID)
         self.assertEqual(user.email, "test@example.com")
         self.assertIsNotNone(user.created_at)
         self.assertIsNotNone(user.updated_at)
+        self.assertEqual(user.created_at, user.updated_at)
 
     def test_duplicate_email(self):
         User("test@example.com", "John", "Doe")
@@ -26,10 +29,11 @@ class TestUser(unittest.TestCase):
 
     def test_user_update(self):
         user = User("test@example.com", "John", "Doe")
+        original_updated_at = user.updated_at
         user.update(first_name="Johnny", last_name="Smith")
         self.assertEqual(user.first_name, "Johnny")
         self.assertEqual(user.last_name, "Smith")
-        self.assertNotEqual(user.created_at, user.updated_at)
+        self.assertGreater(user.updated_at, original_updated_at)
 
 
 if __name__ == '__main__':

@@ -2,6 +2,7 @@ import unittest
 from model.review import Review
 from model.user import User
 from model.place import Place
+import uuid
 
 
 class TestReview(unittest.TestCase):
@@ -18,11 +19,12 @@ class TestReview(unittest.TestCase):
     def test_review_creation(self):
         review = Review("Great place!", 5, self.user.user_id,
                         self.place.place_id)
-        self.assertEqual(review.review_id, 1)
+        self.assertIsInstance(review.review_id, uuid.UUID)
         self.assertEqual(review.content, "Great place!")
         self.assertEqual(review.rating, 5)
         self.assertIsNotNone(review.created_at)
         self.assertIsNotNone(review.updated_at)
+        self.assertEqual(review.created_at, review.updated_at)
 
     def test_review_invalid_rating(self):
         with self.assertRaises(ValueError):
