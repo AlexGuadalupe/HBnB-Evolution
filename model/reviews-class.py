@@ -1,13 +1,19 @@
+import uuid
+from datetime import datetime
+
 class Review:
     review_count = 0
 
     def __init__(self, content, rating, user_id, place_id):
-        self.review_id = Review.review_count + 1
+        if not 1 <= rating <= 5:
+            raise ValueError("Rating must be between 1 and 5")
+
+        self.review_id = uuid.uuid4()
         self.content = content
         self.rating = rating
         self.user_id = user_id
         self.place_id = place_id
-        Review.review_count += 1
+        self.created_at = datetime.now()
+        self.updated_at = self.created_at
 
-    def __repr__(self):
-        return f"Review({self.review_id}, {self.content}, {self.rating}, {self.user_id}, {self.place_id})"
+        Review.review_count += 1
