@@ -1,5 +1,6 @@
 import uuid
-from datetime import datetime
+from model import BaseModel
+
 
 class User:
     user_count = 0
@@ -11,12 +12,9 @@ class User:
         if email in User.email_set:
             raise ValueError("Email already in use")
 
-        self.user_id = uuid.uuid4()
         self.email = email
         self.first_name = first_name
         self.last_name = last_name
-        self.created_at = datetime.now()
-        self.updated_at = self.created_at
 
         User.email_set.add(email)
         User.user_count += 1
@@ -25,7 +23,6 @@ class User:
         for key, value in kwargs.items():
             if hasattr(self, key):
                 setattr(self, key, value)
-        self.updated_at = datetime.now()
 
     @staticmethod
     def validate_email(email):
