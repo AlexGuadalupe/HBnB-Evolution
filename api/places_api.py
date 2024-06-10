@@ -78,6 +78,3 @@ def delete_place(place_id):
         return jsonify({"error": "Place not found."}), 404
     places.remove(place)
     return jsonify({"message": "Place deleted with sucess."}), 200
-
-if __name__ == '__main__':
-    app.run(debug=True)
