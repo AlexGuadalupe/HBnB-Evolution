@@ -1,14 +1,13 @@
 from flask import Flask, request, jsonify
-from datetime import datetime
+from persistence.DataManager import DataManager
 
 app = Flask(__name__)
 
-users_db = {}
+data = DataManager()
 
 
 @app.route('/users', methods=['POST'])
 def create_user():
-    """Crea un nuevo usuario."""
 
 
 @app.route('/users', methods=['GET'])
