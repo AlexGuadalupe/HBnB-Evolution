@@ -1,5 +1,5 @@
 import unittest
-from model.user import User
+from model.users import User
 from datetime import datetime
 import uuid
 
