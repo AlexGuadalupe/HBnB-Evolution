@@ -1,18 +1,18 @@
-from flask import Flask, jsonify, request
+from flask import jsonify, request, Blueprint
 from datetime import datetime
 
-app = Flask(__name__)
-
+places_blueprint = Blueprint('places_api', __name__)
 places = []
 
-@app.route('/places', methods=['POST'])
+
+@places_blueprint.route('/places', methods=['POST'])
 def create_place():
     """Create a new place."""
     data = request.json
     req_place_info = [
-    {"name", "description", "address", "city_id", "latitude",
-    "longitude", "host_id", "number_of_rooms", "number_of_bathrooms",
-    "price_per_night", "max_guests", "amenities_ids"}
+        {"name", "description", "address", "city_id", "latitude",
+         "longitude", "host_id", "number_of_rooms", "number_of_bathrooms",
+         "price_per_night", "max_guests", "amenities_ids"}
     ]
     for info in req_place_info:
         if info not in data:
@@ -23,9 +23,9 @@ def create_place():
         "description": data["description"],
         "address": data["address"],
         "city_id": data["city_id"],
-        "latitude": data["latitude"] ,
+        "latitude": data["latitude"],
         "longitude": data["longitude"],
-        "host_id": data ["host_id"],
+        "host_id": data["host_id"],
         "number_of_rooms": data["number_of_rooms"],
         "number_of_bathrooms": data["number_of_batrooms"],
         "price_per_night": data["price_per_night"],
@@ -36,31 +36,33 @@ def create_place():
     places.append(new_place)
     return jsonify({"message": "New place created with sucess."}), 201
 
-@app.route("/places", methods=["GET"])
+
+@places_blueprint.route("/places", methods=["GET"])
 def get_places():
     """Get all places."""
     return jsonify(places), 200
 
 
-
-@app.route('/places/{place_id}', methods=["GET"])
+@places_blueprint.route('/places/{place_id}', methods=["GET"])
 def get_place(place_id):
     """Get a specific place."""
-    place = next((_place for _place in places if _place["id"] == place_id), None)
+    place = next(
+        (_place for _place in places if _place["id"] == place_id), None)
     if place is None:
         return jsonify({"error": "Place not found."}), 404
     return jsonify(place), 200
 
 
-@app.route('/places/{place_id}', methods=["PUT"])
+@places_blueprint.route('/places/{place_id}', methods=["PUT"])
 def update_place(place_id):
     data = request.json
-    place = next((_place for _place in places if _place["id"] == place_id), None)
+    place = next(
+        (_place for _place in places if _place["id"] == place_id), None)
     if place is None:
         return jsonify({"error": "Place not found."}), 404
     allowed_to_change_info = [
-    {"name", "description", "host_id", "number_of_rooms", "number_of_bathrooms",
-    "price_per_night", "max_guests", "amenities_ids"}
+        {"name", "description", "host_id", "number_of_rooms", "number_of_bathrooms",
+         "price_per_night", "max_guests", "amenities_ids"}
     ]
     for key, value in data.items():
         if key in allowed_to_change_info:
@@ -70,10 +72,12 @@ def update_place(place_id):
         if info not in data:
             return jsonify({"message": "Missing information."}), 400
 
-@app.route("/places/{place.id}", methods=["DELETE"])
+
+@places_blueprint.route("/places/{place.id}", methods=["DELETE"])
 def delete_place(place_id):
     """Delete a place."""
-    place = next((_place for _place in places if _place["id"] == place_id), None)
+    place = next(
+        (_place for _place in places if _place["id"] == place_id), None)
     if place is None:
         return jsonify({"error": "Place not found."}), 404
     places.remove(place)

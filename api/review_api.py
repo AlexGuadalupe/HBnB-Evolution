@@ -1,17 +1,16 @@
-from flask import Flask, request, jsonify
+from flask import request, jsonify, Blueprint
 from datetime import datetime
-import uuid
 from persistence.DataManager import DataManager
 
-app = Flask(__name__)
-
+review_blueprint = Blueprint('review_api', __name__)
 # Initialize DataManager
 data = DataManager()
 
 # Review data model
+
+
 class Review:
     def __init__(self, place_id, user_id, rating, comment):
-        self.review_id = uuid.uuid4()  # Generate a unique ID
         self.place_id = place_id
         self.user_id = user_id
         self.rating = rating
@@ -20,7 +19,9 @@ class Review:
         self.updated_at = self.created_at
 
 # Endpoint to create a review
-@app.route('/places/<int:place_id>/reviews', methods=['POST'])
+
+
+@review_blueprint.route('/places/<int:place_id>/reviews', methods=['POST'])
 def create_review(place_id):
     if request.method == 'POST':
         data = request.get_json()
@@ -34,14 +35,19 @@ def create_review(place_id):
             return jsonify({'error': 'Invalid input'}), 400
 
 # Endpoint to retrieve all reviews for a place
-@app.route('/places/<int:place_id>/reviews', methods=['GET'])
+
+
+@review_blueprint.route('/places/<int:place_id>/reviews', methods=['GET'])
 def get_reviews(place_id):
     if request.method == 'GET':
         place_reviews = data.get_reviews(place_id)
         return jsonify([review.__dict__ for review in place_reviews]), 200
 
 # Endpoint to retrieve a specific review
-@app.route('/places/<int:place_id>/reviews/<uuid:review_id>', methods=['GET'])  # Use UUID for review_id
+
+
+# Use UUID for review_id
+@review_blueprint.route('/places/<int:place_id>/reviews/<uuid:review_id>', methods=['GET'])
 def get_review(place_id, review_id):
     if request.method == 'GET':
         review = data.get_review(place_id, review_id)
@@ -51,7 +57,9 @@ def get_review(place_id, review_id):
             return jsonify({'error': 'Review not found'}), 404
 
 # Endpoint to update a review
-@app.route('/places/<int:place_id>/reviews/<uuid:review_id>', methods=['PUT'])
+
+
+@review_blueprint.route('/places/<int:place_id>/reviews/<uuid:review_id>', methods=['PUT'])
 def update_review(place_id, review_id):
     if request.method == 'PUT':
         data = request.get_json()
@@ -59,7 +67,9 @@ def update_review(place_id, review_id):
         return jsonify(result), 200
 
 # Endpoint to delete a review
-@app.route('/places/<int:place_id>/reviews/<uuid:review_id>', methods=['DELETE'])
+
+
+@review_blueprint.route('/places/<int:place_id>/reviews/<uuid:review_id>', methods=['DELETE'])
 def delete_review(place_id, review_id):
     if request.method == 'DELETE':
         result = data.delete_review(place_id, review_id)
@@ -67,17 +77,20 @@ def delete_review(place_id, review_id):
 
 # User endpoints - Example:
 
-@app.route('/users', methods=['POST'])
+
+@review_blueprint.route('/users', methods=['POST'])
 def create_user():
     if request.method == 'POST':
         user_data = request.get_json()
         # Assuming user_data contains the required fields (e.g., username, email)
-        user = data.create_user(user_data)  # Use the DataManager to create the user
+        # Use the DataManager to create the user
+        user = data.create_user(user_data)
         return jsonify({'message': 'User created successfully', 'user_id': user.user_id}), 201
     else:
         return jsonify({'error': 'Invalid request'}), 400
 
-@app.route('/users', methods=['GET'])
+
+@review_blueprint.route('/users', methods=['GET'])
 def get_users():
     if request.method == 'GET':
         users = data.get_users()
@@ -85,7 +98,8 @@ def get_users():
     else:
         return jsonify({'error': 'Invalid request'}), 400
 
-@app.route('/users/<int:user_id>', methods=['GET'])
+
+@review_blueprint.route('/users/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     if request.method == 'GET':
         user = data.get_user(user_id)
@@ -96,7 +110,8 @@ def get_user(user_id):
     else:
         return jsonify({'error': 'Invalid request'}), 400
 
-@app.route('/users/<int:user_id>', methods=['PUT'])
+
+@review_blueprint.route('/users/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
     if request.method == 'PUT':
         user_data = request.get_json()
@@ -108,7 +123,8 @@ def update_user(user_id):
     else:
         return jsonify({'error': 'Invalid request'}), 400
 
-@app.route('/users/<int:user_id>', methods=['DELETE'])
+
+@review_blueprint.route('/users/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     if request.method == 'DELETE':
         result = data.delete_user(user_id)
@@ -121,4 +137,4 @@ def delete_user(user_id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    review_blueprint.run(debug=True)

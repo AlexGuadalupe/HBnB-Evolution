@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Flask, abort, Blueprint, request, jsonify
 from persistence.DataManager import DataManager
 from datetime import datetime
 
@@ -10,19 +10,19 @@ data = DataManager()
 @user_blueprint.route('/users', methods=['POST'])
 def create_user():
     """Crear un nuevo usuario."""
-    data_json = request.get_json()
-    email = data_json.get('email')
-    first_name = data_json.get('first_name')
-    last_name = data_json.get('last_name')
+    if not request.json or not 'email' in request.json or not 'password' in request.json:
+        abort(400, description="Missing required fields")
 
-    if not email or not first_name or not last_name:
-        return jsonify({'error': 'Missing required fields'}), 400
+    email = request.json['email']
+    password = request.json['password']
+    first_name = request.json.get('first_name', '')
+    last_name = request.json.get('last_name', '')
 
     if '@' not in email:  # Simple email validation
-        return jsonify({'error': 'Invalid email format'}), 400
+        abort(400, 'error': 'Invalid email format'),
 
     if data.get_user_by_email(email):
-        return jsonify({'error': 'Email already exists'}), 409
+        abort(409, 'error': 'Email already exists'),
 
     user = {
         'email': email,
