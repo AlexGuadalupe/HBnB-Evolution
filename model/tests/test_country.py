@@ -1,25 +1,30 @@
 import unittest
-from model.country import Country
 from datetime import datetime
+# Suponiendo que el código de la clase Country está en un archivo llamado country.py
+from model.country import Country
 
 
 class TestCountry(unittest.TestCase):
-
     def setUp(self):
-        Country.country_count = 0
+        self.id = 1
+        self.name = "United States"
+        self.code = "US"
 
-    def test_country_creation(self):
-        country = Country("Puerto Rico", "PR")
-        self.assertEqual(country.country_id, "PR" )
-        self.assertEqual(country.name, "Puerto Rico")
-        self.assertIsNotNone(country.created_at)
-        self.assertIsNotNone(country.updated_at)
-        self.assertTrue(isinstance(country.created_at, datetime))
-        self.assertTrue(isinstance(country.updated_at, datetime))
+    def test_initialization(self):
+        country = Country(self.id, self.name, self.code)
 
+        self.assertEqual(country.id, self.id)
+        self.assertEqual(country.name, self.name)
+        self.assertEqual(country.code, self.code)
+        self.assertIsInstance(country.created_at, datetime)
+        self.assertIsInstance(country.updated_at, datetime)
+        self.assertLessEqual(country.created_at, datetime.now())
+        self.assertLessEqual(country.updated_at, datetime.now())
 
-
-
+    def test_country_count_increment(self):
+        initial_count = Country.country_count
+        Country(self.id, "Canada", "CA")
+        self.assertEqual(Country.country_count, initial_count + 1)
 
 
 if __name__ == '__main__':

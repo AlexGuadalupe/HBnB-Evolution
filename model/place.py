@@ -1,31 +1,40 @@
-import uuid
-from datetime import datetime
+from model.BaseModel import BaseModel
 
-class Places:
-    places_count = 0
 
-    def __init__(self, name, description, address, city_id, latitude,
-                 longitude, host_id, number_of_rooms, number_of_bathrooms,
-                 price_per_night,max_guests, amenities_ids):
-        self.places_id = uuid.uuid4()
+class Place(BaseModel):
+    """  Place class that inherits from BaseModel. Represents a rental place with various attributes. """
+    _places_hosts = {}
+
+    def __init__(self, name, location, owner, description="", address="", city=None, latitude="", longitude="", price_per_night=0, **kwargs):
+        """ Initializes the Place with the given attributes. """
+        super().__init__(**kwargs)
+        if self.__class__._places_hosts.get(name):
+            raise ValueError("This place already has a host assigned.")
+
         self.name = name
+        self.location = location
+        self.owner = owner
         self.description = description
         self.address = address
-        self.city_id = city_id
+        self.city = city
         self.latitude = latitude
         self.longitude = longitude
-        self.host_id = host_id
-        self.number_of_rooms = number_of_rooms
-        self.number_of_bathrooms = number_of_bathrooms
         self.price_per_night = price_per_night
-        self.max_guests = max_guests
-        self.amenities_ids = []
-        self.created_at = datetime.now()
-        self.updated_at = self.created_at
+        self.reviews = []
+        self.amenities = []
 
-        Places.places_count += 1
+        # Asignar el anfitrión al lugar
+        self.__class__._places_hosts[name] = owner
 
-    def add_amenities(self, amenities):
-        if amenities not in self.amenities:
-            self.amenities.append(amenities)
-            self.updated_at = datetime.now()
+    def add_review(self, review):
+        """  Adds a review to the list of reviews for the place. """
+        self.reviews.append(review)
+
+    def add_amenities(self, amenity):
+        """ Adds an amenity to the list of amenities for the place. """
+        self.amenities.append(amenity)
+
+    @classmethod
+    def clear_places_hosts(cls):
+        """ Clears the places hosts mapping. Useful for testing. """
+        cls._places_hosts.clear()
