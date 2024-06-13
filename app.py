@@ -13,5 +13,11 @@ app.register_blueprint(review_blueprint)
 app.register_blueprint(places_blueprint)
 app.register_blueprint(countries_cities_blueprint)
 
+
+@app.route('/')
+def hello_world():
+    return 'Welcome to HBnB!'
+
+
 if __name__ == '__main__':
-    app.run()
+    app.run(host='localhost', port=8081, debug=True)
