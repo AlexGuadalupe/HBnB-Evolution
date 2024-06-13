@@ -1,7 +1,7 @@
 import unittest
+
 from model.users import User
-from datetime import datetime
-import uuid
+from app import app
 
 
 class TestUser(unittest.TestCase):
@@ -11,30 +11,39 @@ class TestUser(unittest.TestCase):
         User.email_set = set()
 
     def test_user_creation(self):
-        user = User("test@example.com", "John", "Doe")
-        self.assertIsInstance(user.user_id, uuid.UUID)
+        user = User(email="test@example.com",
+                    first_name="John", last_name="Doe")
         self.assertEqual(user.email, "test@example.com")
-        self.assertIsNotNone(user.created_at)
-        self.assertIsNotNone(user.updated_at)
-        self.assertEqual(user.created_at, user.updated_at)
+        self.assertEqual(user.first_name, "John")
+        self.assertEqual(user.last_name, "Doe")
+        self.assertEqual(User.user_count, 1)
+        self.assertIn("test@example.com", User.email_set)
 
     def test_duplicate_email(self):
-        User("test@example.com", "John", "Doe")
-        with self.assertRaises(ValueError):
-            User("test@example.com", "Jane", "Doe")
+        User(email="test@example.com", first_name="John", last_name="Doe")
+        with self.assertRaises(ValueError) as context:
+            User(email="test@example.com", first_name="Jane", last_name="Smith")
+        self.assertEqual(str(context.exception), "Email already in use")
 
     def test_invalid_email(self):
-        with self.assertRaises(ValueError):
-            User("invalid-email", "John", "Doe")
+        with self.assertRaises(ValueError) as context:
+            User(email="invalid-email", first_name="John", last_name="Doe")
+        self.assertEqual(str(context.exception), "Invalid email address")
 
     def test_user_update(self):
-        user = User("test@example.com", "John", "Doe")
-        original_updated_at = user.updated_at
-        user.update(first_name="Johnny", last_name="Smith")
-        self.assertEqual(user.first_name, "Johnny")
+        user = User(email="test@example.com",
+                    first_name="John", last_name="Doe")
+        user.update(first_name="Jane", last_name="Smith")
+        self.assertEqual(user.first_name, "Jane")
         self.assertEqual(user.last_name, "Smith")
-        self.assertGreater(user.updated_at, original_updated_at)
+
+    def test_user_unique_id(self):
+        user1 = User(email="test1@example.com",
+                     first_name="John", last_name="Doe")
+        user2 = User(email="test2@example.com",
+                     first_name="Jane", last_name="Smith")
+        self.assertNotEqual(user1.id, user2.id)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
