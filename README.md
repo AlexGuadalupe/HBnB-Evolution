@@ -57,7 +57,7 @@ A simple UML diagram for the HBnB Evolution project can be viewed [here](https:/
 
 To run the unit tests for each task, use the following command:
 ```bash
-python -m unittest discover tests
+python3 -m unittest model.tests.test_*filename*
 
 Task Breakdown
 1. UML Design
