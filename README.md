@@ -22,7 +22,6 @@ The project is structured into several tasks, each focusing on a specific aspect
 
 ## UML Diagram
 
-A simple UML diagram for the HBnB Evolution project can be viewed [here](https://www.mermaidchart.com/app/projects/5c64fbcc-ac6d-44df-a128-d02116d04292/diagrams/a93c32c7-6274-4a94-882d-995d71dfe205/version/v0.1/edit).
 
 ## Usage
 
