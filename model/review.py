@@ -1,5 +1,5 @@
 import uuid
-from model import BaseModel
+from model.BaseModel import BaseModel
 
 
 class Review(BaseModel):

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Flask, abort, Blueprint, request, jsonify
 from persistence.DataManager import DataManager
 from datetime import datetime
 
@@ -10,19 +10,19 @@ data = DataManager()
 @user_blueprint.route('/users', methods=['POST'])
 def create_user():
     """Crear un nuevo usuario."""
-    data_json = request.get_json()
-    email = data_json.get('email')
-    first_name = data_json.get('first_name')
-    last_name = data_json.get('last_name')
+    if not request.json or not 'email' in request.json or not 'password' in request.json:
+        abort(400, description="Missing required fields")
 
-    if not email or not first_name or not last_name:
-        return jsonify({'error': 'Missing required fields'}), 400
+    email = request.json['email']
+    password = request.json['password']
+    first_name = request.json.get('first_name', '')
+    last_name = request.json.get('last_name', '')
 
     if '@' not in email:  # Simple email validation
-        return jsonify({'error': 'Invalid email format'}), 400
+        abort(400, description="Invalid email format")
 
     if data.get_user_by_email(email):
-        return jsonify({'error': 'Email already exists'}), 409
+        abort(409, description="Email already exists")
 
     user = {
         'email': email,
@@ -47,7 +47,7 @@ def get_user(user_id):
     """Obtiene detalles de un usuario específico."""
     user = data.get_user_by_id(user_id)
     if not user:
-        return jsonify({'error': 'User not found'}), 404
+        abort(404, description="User not found")
     return jsonify(user), 200
 
 
@@ -56,7 +56,7 @@ def update_user(user_id):
     """Actualiza un usuario existente."""
     user = data.get_user_by_id(user_id)
     if not user:
-        return jsonify({'error': 'User not found'}), 404
+        abort(404, description="User not found")
 
     data_json = request.get_json()
     email = data_json.get('email', user['email'])
@@ -64,13 +64,13 @@ def update_user(user_id):
     last_name = data_json.get('last_name', user['last_name'])
 
     if not email or not first_name or not last_name:
-        return jsonify({'error': 'Missing required fields'}), 400
+        abort(400, description="Missing required fields")
 
     if '@' not in email:  # Simple email validation
-        return jsonify({'error': 'Invalid email format'}), 400
+        abort(400, description="Invalid email format")
 
     if email != user['email'] and data.get_user_by_email(email):
-        return jsonify({'error': 'Email already exists'}), 409
+        abort(409, description="Email already exists")
 
     updated_user = {
         'email': email,
@@ -87,6 +87,6 @@ def delete_user(user_id):
     """Elimina un usuario."""
     user = data.get_user_by_id(user_id)
     if not user:
-        return jsonify({'error': 'User not found'}), 404
+        abort(404, description="User not found")
     data.delete_user(user_id)
     return '', 204
