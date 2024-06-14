@@ -1,18 +1,18 @@
 from flask import Blueprint, jsonify, request
 from datetime import datetime
 
-countries_blueprint = Blueprint('countries&cities_api', __name__)
+countries_cities_blueprint = Blueprint('countries&cities_api', __name__)
 cities = []
 countries = []
 
 
-@countries_blueprint.route('/countries', methods=['GET'])
+@countries_cities_blueprint.route('/countries', methods=['GET'])
 def get_countries():
     """Get all pre-loaded countries"""
     return jsonify(countries), 200
 
 
-@countries_blueprint.route('/countries/{country_code}', methods=['GET'])
+@countries_cities_blueprint.route('/countries/{country_code}', methods=['GET'])
 def get_country_info(country_code):
     """Get information of a specific country ."""
     country = next(
@@ -22,7 +22,7 @@ def get_country_info(country_code):
     return jsonify(country), 200
 
 
-@countries_blueprint.route('/countries/{country_code}', methods=['GET'])
+@countries_cities_blueprint.route('/countries/{country_code}', methods=['GET'])
 def get_country(country_code):
     """Get a specific country."""
     country = next(
@@ -32,7 +32,7 @@ def get_country(country_code):
     return jsonify(country), 200
 
 
-@countries_blueprint.route('/countries/{country_code}/cities', methods=['GET'])
+@countries_cities_blueprint.route('/countries/{country_code}/cities', methods=['GET'])
 def get_cities_of_country(country_code):
     """Get all cities of a specific country."""
     country = next(
@@ -42,7 +42,7 @@ def get_cities_of_country(country_code):
     return jsonify(country["cities"]), 200
 
 
-@countries_blueprint.route('/city', methods=['POST'])
+@countries_cities_blueprint.route('/city', methods=['POST'])
 def create_city():
     """Create a new city."""
     data = request.json
@@ -63,13 +63,13 @@ def create_city():
     return jsonify({"message": "New city created with sucess."}), 201
 
 
-@countries_blueprint.route('/cities', methods=['GET'])
+@countries_cities_blueprint.route('/cities', methods=['GET'])
 def get_cities():
     """Get all cities."""
     return jsonify(cities), 200
 
 
-@countries_blueprint.route('/cities/{city_id}', methods=['GET'])
+@countries_cities_blueprint.route('/cities/{city_id}', methods=['GET'])
 def update_city(city_id):
     """Update a city."""
     data = request.json
@@ -88,7 +88,7 @@ def update_city(city_id):
             return jsonify({"message": "Missing information."}), 400
 
 
-@countries_blueprint.route('/cities/{city_id}')
+@countries_cities_blueprint.route('/cities/{city_id}')
 def delete_city(city_id):
     """Delete a city."""
     city = next((_city for _city in cities if _city["id"] == city_id), None)

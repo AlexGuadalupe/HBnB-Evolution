@@ -18,7 +18,7 @@ def create_user():
     if not email or not first_name or not last_name:
         return jsonify({'error': 'Missing required fields'}), 400
 
-    if '@' not in email:  # Simple email validation
+    if '@' or '.' not in email:  # Simple email validation
         return jsonify({'error': 'Invalid email format'}), 400
 
     if data.get_user_by_email(email):

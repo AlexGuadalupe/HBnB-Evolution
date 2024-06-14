@@ -17,11 +17,10 @@ def create_amenity():
         if info not in data:
             return jsonify({"message": "Missing information."}), 400
 
-    new_amenity = {"id": len(amenities) + 1["id"],
+    new_amenity = {"id": len(amenities) + 1,
                    "name": data["name"],
                    "created_at": datetime.datetime["created_at"],
                    "updated_at": datetime.datetime["updated_at"]
-
                    }
 
     amenities.append(new_amenity)

@@ -1,5 +1,6 @@
 from persistence.IPersistenceManager import IPersistenceManager
 import json
+import uuid
 
 
 class DataManager(IPersistenceManager):

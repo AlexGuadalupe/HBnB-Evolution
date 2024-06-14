@@ -1,12 +1,13 @@
 import uuid
 from datetime import datetime
 
+
 class Places:
     places_count = 0
 
     def __init__(self, name, description, address, city_id, latitude,
                  longitude, host_id, number_of_rooms, number_of_bathrooms,
-                 price_per_night,max_guests, amenities_ids):
+                 price_per_night, max_guests):
         self.places_id = uuid.uuid4()
         self.name = name
         self.description = description
@@ -19,7 +20,7 @@ class Places:
         self.number_of_bathrooms = number_of_bathrooms
         self.price_per_night = price_per_night
         self.max_guests = max_guests
-        self.amenities_ids = []
+        self.amenity_id = []
         self.created_at = datetime.now()
         self.updated_at = self.created_at
 

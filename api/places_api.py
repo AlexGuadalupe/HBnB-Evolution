@@ -1,11 +1,10 @@
-from flask import Flask, jsonify, request
+from flask import Blueprint, jsonify, request
 from datetime import datetime
 
-app = Flask(__name__)
-
+places_blueprint = Blueprint('places_api', __name__)
 places = []
 
-@app.route('/places', methods=['POST'])
+@places_blueprint.route('/places', methods=['POST'])
 def create_place():
     """Create a new place."""
     data = request.json
@@ -36,14 +35,13 @@ def create_place():
     places.append(new_place)
     return jsonify({"message": "New place created with sucess."}), 201
 
-@app.route("/places", methods=["GET"])
+@places_blueprint.route("/places", methods=["GET"])
 def get_places():
     """Get all places."""
     return jsonify(places), 200
 
 
-
-@app.route('/places/{place_id}', methods=["GET"])
+@places_blueprint.route('/places/{place_id}', methods=["GET"])
 def get_place(place_id):
     """Get a specific place."""
     place = next((_place for _place in places if _place["id"] == place_id), None)
@@ -52,7 +50,7 @@ def get_place(place_id):
     return jsonify(place), 200
 
 
-@app.route('/places/{place_id}', methods=["PUT"])
+@places_blueprint.route('/places/{place_id}', methods=["PUT"])
 def update_place(place_id):
     data = request.json
     place = next((_place for _place in places if _place["id"] == place_id), None)
@@ -70,7 +68,7 @@ def update_place(place_id):
         if info not in data:
             return jsonify({"message": "Missing information."}), 400
 
-@app.route("/places/{place.id}", methods=["DELETE"])
+@places_blueprint.route("/places/{place.id}", methods=["DELETE"])
 def delete_place(place_id):
     """Delete a place."""
     place = next((_place for _place in places if _place["id"] == place_id), None)
