@@ -1,9 +1,9 @@
-efrom flask import Blueprint, request, jsonify
+from flask import Flask, request, jsonify
 from datetime import datetime
 import uuid
 from persistence.DataManager import DataManager
 
-review_blueprint = Blueprint('review_api', __name__)
+app = Flask(__name__)
 
 # Initialize DataManager
 data = DataManager()
@@ -20,7 +20,7 @@ class Review:
         self.updated_at = self.created_at
 
 # Endpoint to create a review
-@review_blueprint.route('/places/<int:place_id>/reviews', methods=['POST'])
+@app.route('/places/<int:place_id>/reviews', methods=['POST'])
 def create_review(place_id):
     if request.method == 'POST':
         data_request = request.get_json()
@@ -35,14 +35,14 @@ def create_review(place_id):
             return jsonify({'error': 'Invalid input'}), 400
 
 # Endpoint to retrieve all reviews for a place
-@review_blueprint.route('/places/<int:place_id>/reviews', methods=['GET'])
+@app.route('/places/<int:place_id>/reviews', methods=['GET'])
 def get_reviews(place_id):
     if request.method == 'GET':
         place_reviews = data.get_reviews(place_id)
         return jsonify([review.__dict__ for review in place_reviews]), 200
 
 # Endpoint to retrieve a specific review
-@review_blueprint.route('/places/<int:place_id>/reviews/<uuid:review_id>', methods=['GET'])  # Use UUID for review_id
+@app.route('/places/<int:place_id>/reviews/<uuid:review_id>', methods=['GET'])  # Use UUID for review_id
 def get_review(place_id, review_id):
     if request.method == 'GET':
         review = data.get_review(place_id, review_id)
@@ -52,7 +52,7 @@ def get_review(place_id, review_id):
             return jsonify({'error': 'Review not found'}), 404
 
 # Endpoint to update a review
-@review_blueprint.route('/places/<int:place_id>/reviews/<uuid:review_id>', methods=['PUT'])
+@app.route('/places/<int:place_id>/reviews/<uuid:review_id>', methods=['PUT'])
 def update_review(place_id, review_id):
     if request.method == 'PUT':
         data_request = request.get_json()
@@ -65,7 +65,7 @@ def update_review(place_id, review_id):
             return jsonify({'error': 'Invalid input'}), 400
 
 # Endpoint to delete a review
-@review_blueprint.route('/places/<int:place_id>/reviews/<uuid:review_id>', methods=['DELETE'])
+@app.route('/places/<int:place_id>/reviews/<uuid:review_id>', methods=['DELETE'])
 def delete_review(place_id, review_id):
     if request.method == 'DELETE':
         result = data.delete_review(place_id, review_id)
@@ -73,3 +73,4 @@ def delete_review(place_id, review_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
