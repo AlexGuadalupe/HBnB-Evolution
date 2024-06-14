@@ -4,7 +4,7 @@ from persistence.DataManager import DataManager
 
 review_blueprint = Blueprint('review_api', __name__)
 # Initialize DataManager
-data = DataManager('reviews.db')
+data = DataManager()
 
 # Review data model
 
