@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+efrom flask import Blueprint, request, jsonify
 from datetime import datetime
 import uuid
 from persistence.DataManager import DataManager
@@ -23,13 +23,14 @@ class Review:
 @review_blueprint.route('/places/<int:place_id>/reviews', methods=['POST'])
 def create_review(place_id):
     if request.method == 'POST':
-        data = request.get_json()
-        if 'user_id' in data and 'rating' in data and 'comment' in data:
-            user_id = data['user_id']
-            rating = data['rating']
-            comment = data['comment']
-            review = data.create_review(place_id, user_id, rating, comment)
-            return jsonify({'message': 'Review created successfully', 'review_id': str(review.review_id)}), 201
+        data_request = request.get_json()
+        if 'user_id' in data_request and 'rating' in data_request and 'comment' in data_request:
+            user_id = data_request['user_id']
+            rating = data_request['rating']
+            comment = data_request['comment']
+            review = Review(place_id, user_id, rating, comment)
+            data.create_review(review)
+            return jsonify({'message': 'Review created successfully', 'eview_id': str(review.review_id)}), 201
         else:
             return jsonify({'error': 'Invalid input'}), 400
 
@@ -54,9 +55,14 @@ def get_review(place_id, review_id):
 @review_blueprint.route('/places/<int:place_id>/reviews/<uuid:review_id>', methods=['PUT'])
 def update_review(place_id, review_id):
     if request.method == 'PUT':
-        data = request.get_json()
-        result = data.update_review(place_id, review_id, data)
-        return jsonify(result), 200
+        data_request = request.get_json()
+        if 'rating' in data_request and 'comment' in data_request:
+            rating = data_request['rating']
+            comment = data_request['comment']
+            result = data.update_review(place_id, review_id, rating, comment)
+            return jsonify(result), 200
+        else:
+            return jsonify({'error': 'Invalid input'}), 400
 
 # Endpoint to delete a review
 @review_blueprint.route('/places/<int:place_id>/reviews/<uuid:review_id>', methods=['DELETE'])
@@ -65,56 +71,5 @@ def delete_review(place_id, review_id):
         result = data.delete_review(place_id, review_id)
         return jsonify(result), 200
 
-# User endpoints - Example:
-
-@review_blueprint.route('/users', methods=['POST'])
-def create_user():
-    if request.method == 'POST':
-        user_data = request.get_json()
-        # Assuming user_data contains the required fields (e.g., username, email)
-        user = data.create_user(user_data)  # Use the DataManager to create the user
-        return jsonify({'message': 'User created successfully', 'user_id': user.user_id}), 201
-    else:
-        return jsonify({'error': 'Invalid request'}), 400
-
-@review_blueprint.route('/users', methods=['GET'])
-def get_users():
-    if request.method == 'GET':
-        users = data.get_users()
-        return jsonify([user.__dict__ for user in users]), 200
-    else:
-        return jsonify({'error': 'Invalid request'}), 400
-
-@review_blueprint.route('/users/<int:user_id>', methods=['GET'])
-def get_user(user_id):
-    if request.method == 'GET':
-        user = data.get_user(user_id)
-        if user:
-            return jsonify(user.__dict__), 200
-        else:
-            return jsonify({'error': 'User not found'}), 404
-    else:
-        return jsonify({'error': 'Invalid request'}), 400
-
-@review_blueprint.route('/users/<int:user_id>', methods=['PUT'])
-def update_user(user_id):
-    if request.method == 'PUT':
-        user_data = request.get_json()
-        result = data.update_user(user_id, user_data)
-        if result:
-            return jsonify({'message': 'User updated successfully'}), 200
-        else:
-            return jsonify({'error': 'User not found'}), 404
-    else:
-        return jsonify({'error': 'Invalid request'}), 400
-
-@review_blueprint.route('/users/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id):
-    if request.method == 'DELETE':
-        result = data.delete_user(user_id)
-        if result:
-            return jsonify({'message': 'User deleted successfully'}), 200
-        else:
-            return jsonify({'error': 'User not found'}), 404
-    else:
-        return jsonify({'error': 'Invalid request'}), 400
+if __name__ == '__main__':
+    app.run(debug=True)
