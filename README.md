@@ -21,7 +21,7 @@ The project is structured into several tasks, each focusing on a specific aspect
 9. **Containerize the Application**: Containerize the Flask application using Docker, ensuring consistency and scalability across different environments.
 
 ## UML Diagram
-
+access the diagram [here](https://lucid.app/lucidchart/2f174024-0500-40da-ac88-c9a872d09966/view)
 
 ## Usage
 
