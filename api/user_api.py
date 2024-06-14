@@ -6,6 +6,7 @@ user_blueprint = Blueprint('user_api', __name__)
 
 data = DataManager()
 
+users = []
 
 @user_blueprint.route('/users', methods=['POST'])
 def create_user():
@@ -25,20 +26,20 @@ def create_user():
         abort(409, description="Email already exists")
 
     user = {
+        'user_id' : len('user_id') + 1,
         'email': email,
         'first_name': first_name,
         'last_name': last_name,
-        'created_at': datetime.utcnow(),
-        'updated_at': datetime.utcnow()
+        'created_at': datetime.now(),
+        'updated_at': datetime.now()
     }
     new_user = data.create_user(user)
     return jsonify(new_user), 201
 
 
 @user_blueprint.route('/users', methods=['GET'])
-def get_users():
+def get_all_users():
     """Obtiene una lista de todos los usuarios."""
-    users = data.get_all_users()
     return jsonify(users), 200
 
 
