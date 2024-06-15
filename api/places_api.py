@@ -10,9 +10,9 @@ def create_place():
     """Create a new place."""
     data = request.json
     req_place_info = [
-        {"name", "description", "address", "city_id", "latitude",
+        "name", "description", "address", "city_id", "latitude",
          "longitude", "host_id", "number_of_rooms", "number_of_bathrooms",
-         "price_per_night", "max_guests", "amenities_ids"}
+         "price_per_night", "max_guests", "amenities_ids"
     ]
     for info in req_place_info:
         if info not in data:

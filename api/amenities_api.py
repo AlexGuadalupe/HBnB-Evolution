@@ -5,12 +5,12 @@ amenities_blueprint = Blueprint('amenities_api', __name__)
 amenities = []
 
 
-@amenities_blueprint.route('/ammenities', methods=['POST'])
+@amenities_blueprint.route('/amenities', methods=['POST'])
 def create_amenity():
     """Create a new amenity"""
     data = request.json
     req_amenity_info = [
-        {"name"}
+        "name"
     ]
 
     for info in req_amenity_info:

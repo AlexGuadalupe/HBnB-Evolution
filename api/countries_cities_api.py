@@ -47,7 +47,7 @@ def create_city():
     """Create a new city."""
     data = request.json
     req_city_info = [
-        {"name", "code"}
+        "name", "code"
     ]
 
     for info in req_city_info:
