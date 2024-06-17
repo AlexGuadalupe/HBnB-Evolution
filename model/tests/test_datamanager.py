@@ -16,6 +16,12 @@ class TestDataManager(unittest.TestCase):
         self.DataManager = DataManager()
         self.entity = Entity(id="1", name="Test Entity")
 
+    def test_get_user_by_id(self):
+        user_id = '123'  # Reemplaza esto con un ID de usuario válido
+        user = self.data_manager.get_user_by_id(user_id)
+        self.assertIsNotNone(user, "No se encontró el usuario.")
+        self.assertEqual(user.id, user_id, "El ID del usuario no coincide.")
+
     def test_save_entity(self):
         """Prueba el método save."""
         self.DataManager.save(self.entity)

@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from api.user_api import user_blueprint
 from api.amenities_api import amenities_blueprint
 from api.review_api import review_blueprint

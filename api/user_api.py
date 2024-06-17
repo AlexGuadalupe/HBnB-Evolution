@@ -10,11 +10,12 @@ data = DataManager()
 @user_blueprint.route('/users', methods=['POST'])
 def create_user():
     """Crear un nuevo usuario."""
-    if not request.json or not 'email' in request.json or not 'password' in request.json:
+    if not request.json or not 'email' in request.json:
+        # or not 'password' in request.json:
         abort(400, description="Missing required fields")
 
     email = request.json['email']
-    password = request.json['password']
+    # password = request.json['password']
     first_name = request.json.get('first_name', '')
     last_name = request.json.get('last_name', '')
 
@@ -46,9 +47,9 @@ def get_users():
 def get_user(user_id):
     """Obtiene detalles de un usuario específico."""
     user = data.get_user_by_id(user_id)
+    return jsonify(user.to_dict()), 200
     if not user:
         abort(404, description="User not found")
-    return jsonify(user), 200
 
 
 @user_blueprint.route('/users/<int:user_id>', methods=['PUT'])
